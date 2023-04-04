@@ -11,7 +11,7 @@ require(cmdstanr)
 
 # setup args ----
 args <- list(
-  source_dir = '~/Documents/GitHub/source.attr.with.infection.time.public',
+  source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
   indir = '~/Box\ Sync/Roadmap/source_attribution',
   outdir = 'out_Amsterdam',
   #pairs_dir = 'agegps_updated_criteria_210216_MSM-2010_2022',

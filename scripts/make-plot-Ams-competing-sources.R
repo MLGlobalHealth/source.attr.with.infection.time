@@ -18,8 +18,8 @@ if (1)
   args <- list(
     source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
     indir = '~/Box\ Sync/Roadmap/source_attribution',
-    pairs.dir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam/agegps_updated_criteria_MSM-2010_2022',
-    outdir= '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_TE16_MSM-2010_2022-1665619',
+    pairs.dir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/agegps_updated_criteria_MSM-2010_2022',
+    outdir= '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_TE16_MSM-2010_2022-1665619',
     clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
     stanModelFile = 'mm_bgUnif_piGP_221027_KD',
     scenario = 15,

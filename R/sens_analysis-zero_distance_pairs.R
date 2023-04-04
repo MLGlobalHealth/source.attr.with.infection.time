@@ -19,8 +19,8 @@ if (1)
   args <- list(
     source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
     indir = '~/Box\ Sync/Roadmap/source_attribution',
-    #outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_TE16_MSM-2010_2022-1665619',
-    outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_sensanalysis_210216_MSM-618873',
+    #outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_TE16_MSM-2010_2022-1665619',
+    outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_sensanalysis_210216_MSM-618873',
     clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
     #stanModelFile = 'mm_sigHierG_bgUnif_piReg_220815',
     #stanModelFile = 'mm_bgUnif_piGP_221020',

@@ -13,12 +13,12 @@ analysis <- 'analysis_220713'
 results <- 'agegps_updated_criteria_210216_MSM-2010_2022'
 #results <- 'agegps_sensanalysis_210216_MSM-2010_2022'
 indir_data <- '/Users/alexb/Box Sync/Roadmap'
-out.dir <- file.path('~/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam',results)
+out.dir <- file.path('~/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam',results)
 clock_model <- '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical'
 # Load data [1. data on infection dates, 2. meta data information, 3. age data of recipients]
 
 args <- list(
-  source_dir ='/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork',
+  source_dir ='/Users/alexb/Documents/GitHub/source.attr.with.infection.time',
   indir = '/Users/alexb/Documents/Roadmap/refactor_code',
   mig_groups=T,
   trsm='MSM',

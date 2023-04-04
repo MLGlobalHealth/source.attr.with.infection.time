@@ -15,7 +15,7 @@ require(lubridate)
 if (1)
 {
   args <- list(
-    source_dir = '~/Documents/GitHub/source.attr.with.infection.time.public',
+    source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
     indir = '~/Box\ Sync/Roadmap/source_attribution',
     outdir = '/Users/alexb/Box Sync/Roadmap/source_attribution/mm_bgUnif_pi1DGP_sim_230224b-simulations_408truepairs_agesrcrec_exclTE16_subsample14pct-261528',
     clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',

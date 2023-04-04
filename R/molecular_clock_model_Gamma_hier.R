@@ -7,7 +7,7 @@ require(bayesplot)
 ## Preamble----
 if (1)
 {
-  pkg.dir <- '~/Documents/GitHub/source.attr.with.infection.time.fork'
+  pkg.dir <- '~/Documents/GitHub/source.attr.with.infection.time'
   indir <- file.path(pkg.dir,'data_other')
   outdir <- '~/Documents/GitHub/source.attr.with.infection.time/out_simulated'
   outdir <- '~/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical'

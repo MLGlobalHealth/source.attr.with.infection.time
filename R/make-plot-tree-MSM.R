@@ -13,7 +13,7 @@ trsm <- 'MSM'
 rdas <- list.files(indir,pattern = "*AmsMSM__workspace.rda")
 
 # load metadata
-pairs.dir <- file.path('~/Documents/GitHub/source.attr.with.infection.time.fork','out_Amsterdam','agegps_updated_criteria_MSM-2010_2022')
+pairs.dir <- file.path('~/Documents/GitHub/source.attr.with.infection.time','out_Amsterdam','agegps_updated_criteria_MSM-2010_2022')
 all_pairs <- readRDS(file=file.path(pairs.dir, 'all_pairs.rds'))
 pairs <- readRDS(file.path(pairs.dir,paste0(trsm,"_pairs.rds")))
 

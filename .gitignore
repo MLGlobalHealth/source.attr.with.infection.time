@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+out_simulated/*
+out_Amsterdam/*
+data_Ams/*.rds
+data_Ams/*.pdf
+data_Ams/*.newick
+data_Ams/analysis_220713/dated_trees/*
+data_other/transmission_network/phylogenetic*

@@ -13,13 +13,14 @@ analysis <- 'analysis_220713'
 results <- 'agegps_updated_criteria_210216_MSM-2010_2022'
 #results <- 'agegps_sensanalysis_210216_MSM-2010_2022'
 indir_data <- '/Users/alexb/Box Sync/Roadmap'
-out.dir <- file.path('~/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam',results)
+out.dir <- file.path('~/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam',results)
 clock_model <- '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical'
 # Load data [1. data on infection dates, 2. meta data information, 3. age data of recipients]
 
 args <- list(
-  source_dir ='/Users/alexb/Documents/GitHub/source.attr.with.infection.time',
-  indir = '/Users/alexb/Documents/Roadmap/refactor_code',
+  source_dir ='/Users/alexb/Documents/GitHub/source.attr.with.infection.time.public',
+  #indir = '/Users/alexb/Documents/Roadmap/refactor_code',
+  indir = '/Users/alexb/Box Sync/Roadmap',
   mig_groups=T,
   trsm='MSM',
   sens=T # for sensitivity analysis with patristic distances of 0
@@ -32,7 +33,7 @@ if(1) dir.create( out.dir )
 
 infile.seq <-	file.path(args$indir, 'Data', 'data_220331/SHM_2201_ROADMAP_220331_tblLAB_seq.rda')
 infile.meta <- file.path(args$indir, analysis, 'misc', '220713_sequence_labels.rda')
-infile.bas <- file.path(args$indir, 'Data', 'data_220331/','SHM_2201_ROADMAP_220331_tblBAS.csv')
+infile.bas <- file.path(args$indir, 'Data', 'data_220331','SHM_2201_ROADMAP_220331_tblBAS.csv')
 
 load(infile.seq)
 load(infile.meta)
@@ -170,6 +171,7 @@ pairs <- subset(pairs, TO_SEQUENCE_ID %notin% singletons)
 # number of unique sources
 cat(paste0('Number of pairs before exclusions: ',nrow(pairs)))
 cat(paste0('Number of sources: ',length(unique(pairs$FROM_SEQUENCE_ID))))
+cat(paste0('Number of cases: ',length(unique(pairs$TO_SEQUENCE_ID))))
 
 # save all pairs
 saveRDS(pairs,file=file.path(out.dir, 'all_pairs.rds'))
@@ -262,6 +264,10 @@ cat(paste0('Number of sources who were likely durably virally suppressed on infe
 
 pairs <- subset(pairs,supp==0 | is.na(supp))
 
+cat(paste0('Number of unique pairs: ',length(unique(pairs))))
+cat(paste0('Number of unique sources: ',length(unique(pairs$FROM_SEQUENCE_ID))))
+cat(paste0('Number of unique cases: ',length(unique(pairs$TO_SEQUENCE_ID))))
+
 ### Remove pairs whose time elapsed is larger than 18 year ----
 
 pairs[,TIME_ELAPSED := as.numeric((TO_SAMPLING_DATE-TO_EST_INFECTION_DATE)+abs(FROM_SAMPLING_DATE-TO_EST_INFECTION_DATE))/365]
@@ -270,9 +276,17 @@ cat(paste0('Number of pairs with time elapsed > 16 years: ',nrow(subset(pairs,TI
 
 pairs <- pairs[which(TIME_ELAPSED<16),]
 
+cat(paste0('Number of unique pairs: ',length(unique(pairs))))
+cat(paste0('Number of unique sources: ',length(unique(pairs$FROM_SEQUENCE_ID))))
+cat(paste0('Number of unique cases: ',length(unique(pairs$TO_SEQUENCE_ID))))
+
 ### remove pairs not in same phylo subgraph ----
 cat(paste0('Number of sources in different phylo subgraph to recip: ',nrow(pairs[FROM_CLUSTER_NUMBER!=TO_CLUSTER_NUMBER])))
 pairs <- subset(pairs,FROM_CLUSTER_NUMBER==TO_CLUSTER_NUMBER)
+
+cat(paste0('Number of unique pairs: ',nrow(pairs)))
+cat(paste0('Number of unique sources: ',length(unique(pairs$FROM_SEQUENCE_ID))))
+cat(paste0('Number of unique cases: ',length(unique(pairs$TO_SEQUENCE_ID))))
 
 ## add genetic distance and calculate time elapsed ----
 
@@ -373,6 +387,12 @@ cat(paste0("proportion of true pairs = ", round(length(unique(pairs$TO_SEQUENCE_
 
 write.csv(data.table(table(pairs$FROM_COUNTRY,pairs$FROM_BPLACE)),file=file.path(out.dir, 'from_bplace_includedpairs.csv'))
 write.csv(data.table(table(pairs$TO_COUNTRY,pairs$TO_BPLACE)),file=file.path(out.dir, 'to_bplace_includedpairs.csv'))
+
+# save anonymised pairs ----
+
+anon <- subset(pairs,select=c('PAIR_ID','FROM_SEQUENCE_ID','TO_SEQUENCE_ID','GEN_DIST','TIME_ELAPSED','FROM_AGE','TO_AGE','FROM_AGE_GP','TO_AGE_GP'))
+saveRDS(anon,file=file.path(in.dir,paste0(args$trsm,"_anonymised_pairs.rds")))
+
 
 # summary plots of pairs ----
 # plot birthplaces of sources by time period
@@ -651,3 +671,5 @@ p <- ggplot(tmp,aes(x=as.factor(variable),y=value,fill=as.factor(variable)))+geo
   labs(x="",y="Total number of probable transmission pairs \n and corresponding pairs in signal cone \n",fill="")
 p
 ggsave(file=file.path(out.dir,'Pairs_in_cone.pdf'), p, w=5, h=4)
+
+

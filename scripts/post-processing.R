@@ -15,22 +15,25 @@ require(lubridate)
 if (1)
 {
   args <- list(
-    source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
+    source_dir = '~/Documents/GitHub/source.attr.with.infection.time.fork',
     indir = '~/Box\ Sync/Roadmap/source_attribution',
-    outdir = '/Users/alexb/Box Sync/Roadmap/source_attribution/mm_bgUnif_pi1DGP_sim_230224b-simulations_408truepairs_agesrcrec_exclTE16_subsample14pct-261528',
+    #outdir = '/Users/alexb/Box Sync/Roadmap/source_attribution/mm_bgUnif_pi1DGP_sim_230224b-simulations_408truepairs_agesrcrec_exclTE16_subsample14pct-261528',
+    outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_TE16_MSM-2010_2022-1665619',
     clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
     #stanModelFile = 'mm_sigHierG_bgUnif_piTE_220421',
-    #stanModelFile = 'mm_sigHierG_bgUnif_piVanilla_220408',
+    stanModelFile = 'mm_sigHierG_bgUnif_piVanilla_220408',
     #stanModelFile = 'mm_sigHierG_bgUnif_piReg_220325',
     #stanModelFile = 'mm_sigHierG_bgUnif_piReg_221123',
     #stanModelFile = 'mm_sigHierG_bgUnif_piReg_230111',
     #stanModelFile = 'mm_bgUnif_piGP_221027',
-    stanModelFile = 'mm_bgUnif_pi1DGP_sim_230224b',
+    stanModelFile = 'mm_bgUnif_piGP_221027b',
+    #stanModelFile = 'mm_bgUnif_pi1DGP_sim_230224b',
     scenario = 1,
     reps = 1,
     rep = 1,
     simulate_data = T,
-    job_tag = 'simulations_408truepairs_agesrcrec_exclTE16_subsample14pct'
+    #job_tag = 'simulations_408truepairs_agesrcrec_exclTE16_subsample14pct',
+    job_tag = 'agegps_TE16_MSM-2010_2022'
   )
 }
 
@@ -160,7 +163,7 @@ p <- bayesplot:::mcmc_pairs(pd,
                             diag_fun = "dens",
                             off_diag_fun = "hex"
 )
-ggsave(p, file = paste0(outfile.base, "-HMC-pairs_transmission_pars.pdf"), w=length(fit.target.pars)*2, h=length(fit.target.pars)*2)
+ggsave(p, file = paste0(outfile.base, "-HMC-pairsplot_transmission_pars.pdf"), w=length(fit.target.pars)*2, h=length(fit.target.pars)*2)
 cat("\n ----------- make pairs plots: end ----------- \n")
 
 ## plot mixing weights----

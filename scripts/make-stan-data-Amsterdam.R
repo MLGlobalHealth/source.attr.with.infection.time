@@ -11,13 +11,14 @@ require(cmdstanr)
 
 # setup args ----
 args <- list(
-  source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
+  source_dir = '~/Documents/GitHub/source.attr.with.infection.time.fork',
   indir = '~/Box\ Sync/Roadmap/source_attribution',
   outdir = 'out_Amsterdam',
   #pairs_dir = 'agegps_updated_criteria_210216_MSM-2010_2022',
   #job_tag = 'agegps_TE16_MSM-2010_2022',
   pairs_dir = 'agegps_sensanalysis_210216_MSM-2010_2022',
-  job_tag = 'agegps_sensanalysis_210216_MSM',
+  #job_tag = 'agegps_sensanalysis_210216_MSM',
+  job_tag = 'test_script',
   #job_tag = 'agegps_sensanalysis_agesrcrec_210216_MSM',
   trsm = 'MSM',
   clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
@@ -60,7 +61,7 @@ r <- 1
 
 # load pairs data ----
 
-pairs <- readRDS(file.path(in.dir,paste0(args$trsm,"_pairs.rds")))
+pairs <- readRDS(file.path(in.dir,paste0(args$trsm,"_anonymised_pairs.rds")))
 
 tmp <- pairs[, list(N=length(unique(FROM_SEQUENCE_ID))),by='TO_SEQUENCE_ID']
 
@@ -89,8 +90,6 @@ do[,FROM_AGE_INT:= round(FROM_AGE)]
 do[,TO_AGE_INT:= round(TO_AGE)]
 do[,FROM_AGE_GP_2:= factor(FROM_AGE_GP,labels=c(1,2,3,4,5))]
 do[,TO_AGE_GP_2:= factor(TO_AGE_GP,labels=c(1,2,3,4,5))]
-do[TRANS_STAGE=='ART',TRANS_STAGE:='DIAGNOSED'] # remove if already grouped
-do[, TRANS_STAGE := factor(TRANS_STAGE, levels=c("DIAGNOSED","UNDIAGNOSED"),labels=c("Diagnosed","Undiagnosed"))]
 
 # get unique time elapsed
 
@@ -117,7 +116,6 @@ do[, PAIR_ID := seq(1,nrow(do)) ]
 dps_clock <- readRDS(file = file.path(in.dir,'clock_quantiles.rds'))
 
 do2 <- copy(do)
-do2[, TRANS_STAGE := factor(TRANS_STAGE, levels=c("Diagnosed","Undiagnosed"),labels=c("Diagnosed, but not virally\nsuppressed, at putative\ninfection time of recipient","Undiagnosed"))]
 
 pal_3 <- pal_npg("nrc")(4)[c(1,3)]
 p.palette <- RColorBrewer::brewer.pal(5,'Oranges')
@@ -201,7 +199,7 @@ g1 <- ggplot(subset(tmp)) + geom_bar(aes(x=TO_AGE_GP,y=pct,fill=FROM_AGE_GP),sta
   theme(legend.pos='bottom') + #,
   coord_cartesian(ylim = c(0,1)) +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1L),breaks=seq(0,1,0.1))
-ggsave(file = paste0(outfile.base,'-rep_',r,'-obs_sources_age_source.png'), g1, w = 10, h = 8)
+ggsave(file = paste0(outfile.base,'-obs_sources_age_source.png'), g1, w = 10, h = 8)
 
 tmp <- do[, list(N=length(PAIR_ID)),by=c('FROM_AGE_GP','TO_AGE_GP')]
 tmp <- tmp[, list(FROM_AGE_GP=FROM_AGE_GP,pct=N/sum(N)),by='TO_AGE_GP']
@@ -213,14 +211,14 @@ g2 <- ggplot(subset(tmp)) + geom_bar(aes(x=TO_AGE_GP,y=pct,fill=FROM_AGE_GP),sta
   coord_cartesian(ylim = c(0,1)) +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1L),breaks=seq(0,1,0.1))
 g2
-ggsave(file = paste0(outfile.base,'-rep_',r,'-obs_sources_age_source_recipient.png'), g2, w = 10, h = 8)
+ggsave(file = paste0(outfile.base,'-obs_sources_age_source_recipient.png'), g2, w = 10, h = 8)
 
 legend_t <- cowplot::get_legend(g2 + theme(legend.position = "bottom"))
 
 g <- ggarrange(g1 + rremove("xlab")+ theme(legend.position='none'),g2+ theme(legend.position='none'),ncol=2,widths=c(0.35,0.65),align='hv')
 g <- ggarrange(g, legend_t,ncol=1,heights=c(0.8,0.2))
-ggsave(file = paste0(outfile.base,'-rep_',r,'-obs_sources_age_source_recipient_panel.png'), g, w = 16, h = 8)
-ggsave(file = paste0(outfile.base,'-rep_',r,'-obs_sources_age_source_recipient_panel.pdf'), g, w = 16, h = 8)
+ggsave(file = paste0(outfile.base,'-obs_sources_age_source_recipient_panel.png'), g, w = 16, h = 8)
+ggsave(file = paste0(outfile.base,'-obs_sources_age_source_recipient_panel.pdf'), g, w = 16, h = 8)
 
 saveRDS(dps_clock,file = paste0(outfile.base,'-clock_quantiles.rds'))
 
@@ -231,7 +229,6 @@ stan_data$N <- nrow(do)
 stan_data$P <- length(unique(do$TO_SEQUENCE_ID))
 stan_data$y <- do$GEN_DIST
 stan_data$S <- length(unique(do$FROM_AGE_GP))
-stan_data$stage_to_obs_idx <- as.numeric(as.factor(do$TRANS_STAGE))
 stan_data$x <- do$TIME_ELAPSED
 stan_data$pt_idx <- factor(do$TO_SEQUENCE_ID,levels=unique(do$TO_SEQUENCE_ID),labels=seq(1,length(unique(do$TO_SEQUENCE_ID)),1))
 tmp <- unique(do, by = 'IDX_UNIQUE_TE')[order(IDX_UNIQUE_TE)]
@@ -480,10 +477,10 @@ stan_init$y_mix <- y_mix[args$chain]
 ## save image before running Stan
 tmp <- names(.GlobalEnv)
 tmp <- tmp[!grepl('^.__|^\\.|^model$',tmp)]
-save(list=tmp, file=paste0(outfile.base,'-rep_',r, '_stanin.RData') )
+save(list=tmp, file=paste0(outfile.base, '_stanin.RData') )
 
 # save stan_data object
-rstan::stan_rdump( names(stan_data), file=paste0(outfile.base,'-rep_',r, '_cmdstanin.R'), envir=list2env(stan_data))
+rstan::stan_rdump( names(stan_data), file=paste0(outfile.base, '_cmdstanin.R'), envir=list2env(stan_data))
 
 # compile stan model ----
 options(mc.cores = parallel::detectCores())
@@ -509,7 +506,7 @@ model_fit <- sim_mixture_compiled$sample(
   init = function() list(y_mix=y_mix)
 )
 
-tmp <- paste0(outfile.base,'-rep_',r,'-fitted_stan_model.rds')
+tmp <- paste0(outfile.base,'-fitted_stan_model.rds')
 cat("\n Save fitted data to file ", tmp , "\n")
 model_fit$save_object(file = tmp)
 

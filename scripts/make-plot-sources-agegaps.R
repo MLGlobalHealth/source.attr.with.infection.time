@@ -18,18 +18,21 @@ require(Hmisc)
 if (1)
 {
   args <- list(
-    source_dir = '~/Documents/GitHub/source.attr.with.infection.time',
+    source_dir = '~/Documents/GitHub/source.attr.with.infection.time.fork',
     indir = '~/Box\ Sync/Roadmap/source_attribution',
     pairs.dir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/agegps_updated_criteria_MSM-2010_2022',
     #outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.fork/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_TE16_MSM-2010_2022-1665619',
-    outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_sensanalysis_210216_MSM-618873',
+    #outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time/out_Amsterdam/mm_bgUnif_piGP_221027b-agegps_sensanalysis_210216_MSM-618873',
+    outdir = '/Users/alexb/Documents/GitHub/source.attr.with.infection.time.public/out_Amsterdam/mm_sigHierG_bgUnif_piVanilla_220408b-test_script-2343296',
     clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
-    stanModelFile = 'mm_bgUnif_piGP_221027b',
+    stanModelFile = 'mm_sigHierG_bgUnif_piVanilla_220408b',
+    #stanModelFile = 'mm_bgUnif_piGP_221027b',
     scenario = 15,
     reps = 1,
     rep = 1,
     simulate_data = T,
-    job_tag = 'agegps_sensanalysis_210216_MSM-2010_2022'
+    job_tag = 'test_script-2010_2022'
+    #job_tag = 'agegps_sensanalysis_210216_MSM-2010_2022'
   )
 }
 
@@ -91,7 +94,7 @@ po <- as.data.table(po)
 setnames(po, colnames(po), gsub('^\\.','',colnames(po)))
 po <- melt(po, id.vars = c('chain','iteration','draw'))
 po[, PAIR_ID := as.integer(gsub(paste0('tpair_prob_w','\\[([0-9]+)\\]'),'\\1',as.character(variable)))]
-tmp <- subset(do, select = c('PAIR_ID','FROM_AGE_GP','TRANS_STAGE'))
+tmp <- subset(do, select = c('PAIR_ID','FROM_AGE_GP'))
 po <- merge(po, tmp, by = 'PAIR_ID')
 po <- po[, list(value = sum(value)), by = c('draw','FROM_AGE_GP')]
 tmp <- po[, list(total = sum(value)), by = c('draw')]
@@ -134,7 +137,7 @@ po <- as.data.table(po)
 setnames(po, colnames(po), gsub('^\\.','',colnames(po)))
 po <- melt(po, id.vars = c('chain','iteration','draw'))
 po[, PAIR_ID := as.integer(gsub(paste0('tpair_prob_w','\\[([0-9]+)\\]'),'\\1',as.character(variable)))]
-tmp <- subset(do, select = c('PAIR_ID','FROM_AGE_GP','TO_AGE_GP','TRANS_STAGE'))
+tmp <- subset(do, select = c('PAIR_ID','FROM_AGE_GP','TO_AGE_GP'))
 po <- merge(po, tmp, by = 'PAIR_ID')
 po <- po[, list(value = sum(value)), by = c('draw','FROM_AGE_GP','TO_AGE_GP')]
 tmp <- po[, list(total = sum(value)), by = c('draw','TO_AGE_GP')]

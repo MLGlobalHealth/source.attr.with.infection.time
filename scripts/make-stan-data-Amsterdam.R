@@ -15,16 +15,14 @@ args <- list(
   indir = '~/Box\ Sync/Roadmap/source_attribution',
   outdir = 'out_Amsterdam',
   #pairs_dir = 'agegps_updated_criteria_210216_MSM-2010_2022',
-  #job_tag = 'agegps_TE16_MSM-2010_2022',
+  analysis = 'analysis_220713',
   pairs_dir = 'agegps_sensanalysis_210216_MSM-2010_2022',
-  #job_tag = 'agegps_sensanalysis_210216_MSM',
-  job_tag = 'test_script',
-  #job_tag = 'agegps_sensanalysis_agesrcrec_210216_MSM',
+  job_tag = 'agegps_sensanalysis_210216_MSM',
   trsm = 'MSM',
   clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
-  stanModelFile = 'mm_sigHierG_bgUnif_piVanilla_220408b', # vanilla model
+  #stanModelFile = 'mm_sigHierG_bgUnif_piVanilla_220408b', # vanilla model
   #stanModelFile = 'mm_sigHierG_bgUnif_piReg_230111b', # covariate model
-  #stanModelFile = 'mm_bgUnif_piGP_221027b', # 2D HSGP model
+  stanModelFile = 'mm_bgUnif_piGP_221027b', # 2D HSGP model
   #stanModelFile = 'mm_bgUnif_pi1DGP_Ams_230224', # 1D HSGP model
   #stanModelFile = 'mm_bgUnif_pi1DGP_Ams_230224b', # 2 * 1D HSGP model
   hmc_stepsize = 0.02,
@@ -61,7 +59,7 @@ r <- 1
 
 # load pairs data ----
 
-pairs <- readRDS(file.path(in.dir,paste0(args$trsm,"_anonymised_pairs.rds")))
+pairs <- fread(file.path('data_Ams',args$analysis,paste0(args$trsm,"_anonymised_pairs.csv")))
 
 tmp <- pairs[, list(N=length(unique(FROM_SEQUENCE_ID))),by='TO_SEQUENCE_ID']
 

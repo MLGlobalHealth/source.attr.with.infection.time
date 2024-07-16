@@ -8,23 +8,29 @@ require(bayesplot)
 require(ggsci)
 require(ggpubr)
 require(cmdstanr)
+require(EMCluster)
 
 # setup args ----
 args <- list(
-  source_dir = '~/Documents/GitHub/source.attr.with.infection.time.fork',
+  #source_dir = '~/Documents/GitHub/source.attr.with.infection.time.fork',
+  source_dir = '~/Documents/GitHub/source.attr.with.infection.time.public',
   indir = '~/Box\ Sync/Roadmap/source_attribution',
   outdir = 'out_Amsterdam',
   #pairs_dir = 'agegps_updated_criteria_210216_MSM-2010_2022',
   analysis = 'analysis_220713',
   pairs_dir = 'agegps_sensanalysis_210216_MSM-2010_2022',
   job_tag = 'agegps_sensanalysis_210216_MSM',
+  #job_tag = 'sens_bg_2DMM_MSM',
+  #job_tag = 'sens_bg_lnorm_MSM',
   trsm = 'MSM',
   clock_model = '/Users/alexb/Box Sync/Roadmap/source_attribution/molecular_clock/hierarchical',
   #stanModelFile = 'mm_sigHierG_bgUnif_piVanilla_220408b', # vanilla model
   #stanModelFile = 'mm_sigHierG_bgUnif_piReg_230111b', # covariate model
   stanModelFile = 'mm_bgUnif_piGP_221027b', # 2D HSGP model
+  #stanModelFile = 'mm_bglnorm_piGP_240624', # 2D HSGP model
   #stanModelFile = 'mm_bgUnif_pi1DGP_Ams_230224', # 1D HSGP model
   #stanModelFile = 'mm_bgUnif_pi1DGP_Ams_230224b', # 2 * 1D HSGP model
+  #stanModelFile = 'mm_bgMVMM_piGP_240710', # 2D HSGP model
   hmc_stepsize = 0.02,
   hmc_num_samples = 15,
   hmc_num_warmup = 10,
@@ -107,7 +113,6 @@ do <- merge(do, tmp, by = c("FROM_AGE_INT","TO_AGE_INT"))
 do <- do[order(FROM_AGE_INT,TO_AGE_INT),]
 do <- data.table(do)
 do[, PAIR_ID := seq(1,nrow(do)) ]
-
 
 # load signal cone from clock model ----
 
@@ -194,7 +199,7 @@ g1 <- ggplot(subset(tmp)) + geom_bar(aes(x=TO_AGE_GP,y=pct,fill=FROM_AGE_GP),sta
   scale_fill_npg() +
   labs(x='Age of recipient', y='Proportion of attributable\ninfections to age group',fill='Age of likely source') +
   theme_bw(base_size=28) +
-  theme(legend.pos='bottom') + #,
+  theme(legend.position='bottom') + #,
   coord_cartesian(ylim = c(0,1)) +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1L),breaks=seq(0,1,0.1))
 ggsave(file = paste0(outfile.base,'-obs_sources_age_source.png'), g1, w = 10, h = 8)
@@ -205,7 +210,7 @@ g2 <- ggplot(subset(tmp)) + geom_bar(aes(x=TO_AGE_GP,y=pct,fill=FROM_AGE_GP),sta
   scale_fill_npg() +
   labs(x='Age of recipient', y='Proportion of attributable\ninfections to age group',fill='Age of likely source') +
   theme_bw(base_size=28) +
-  theme(legend.pos='bottom') + #,
+  theme(legend.position='bottom') + #,
   coord_cartesian(ylim = c(0,1)) +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1L),breaks=seq(0,1,0.1))
 g2
@@ -464,6 +469,33 @@ if(grepl('_agesrcrec_',args$job_tag)){
   stan_data$M <- stan_data$M[1]
   stan_data$D <- 1
   stan_data$c <- args$B
+}
+
+# optional sensitivity analysis for different BG distribution ----
+
+# fit 2D bivariate normal distribution to times and distances
+if(grepl('_bgGMM_',args$stanModelFile)){
+  
+  # fit a mixture of gaussians using EMCluster package
+  data <- matrix(c(do$TIME_ELAPSED,do$GEN_DIST),ncol=2)
+  n_clusters <- 3  # Number of clusters
+  init_params <- init.EM(data, nclass = n_clusters)
+  gmm <- emcluster(data,init_params,assign.class=T)
+
+  plot(data, col = gmm$class)
+  g <- ggplot(data.table(data)) + geom_point(aes(x=V1,y=V2,col=factor(gmm$class))) + 
+    scale_color_discrete() + theme_bw() + labs(x='time elapsed',y='patristic distance',col='cluster membership')
+  ggsave(file = paste0(outfile.base,'-BNMM_classifications.png'),g, w = 7, h = 5)
+  
+  sigma <- LTSigma2variance(gmm$LTSigma)
+  
+  # store parameters:
+  stan_data$K <- n_clusters
+  stan_data$mu <- t(gmm$Mu)
+  stan_data$gmm_pi <- gmm$pi
+  stan_data$Sigma <- array(sigma[, , ], dim = c(ncol(data), ncol(data), n_clusters))
+  stan_data$Sigma <- aperm(stan_data$Sigma, c(3, 1, 2))
+
 }
 
 # init values ----

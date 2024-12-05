@@ -39,7 +39,7 @@ for(i in 1:nrow(tab)){
 
   tmp[, model:= tab[i,model]]
 
-  tmp2 <- readRDS(file = paste0(outfile.base,'.rds'))
+  tmp2 <- readRDS(file = paste0(tab[i,outfile.base],'.rds'))
   tmp3 <- tmp2[, list(N_sources=length(unique(FROM_ID))),by='TO_ID']
   tmp3 <- tmp3[, list(p_pairs=tmp[, p_pairs],
                       N_sources=mean(N_sources))]
@@ -108,7 +108,7 @@ g1 <- ggplot(sim_scenario) +
        colour = 'Transmission pair') +
   scale_x_continuous(breaks=seq(15,80,10),labels=seq(15,80,10)) +
   scale_y_continuous(breaks=seq(15,80,10),labels=seq(15,80,10)) +
-  scale_colour_manual(values=c(pal[2],pal[1])) +
+  scale_colour_manual(values=c(pal[1],pal[2])) +
   theme_bw(base_size=16) +
   theme(strip.background=element_blank(),
         legend.position='bottom',
@@ -117,5 +117,5 @@ g1 <- ggplot(sim_scenario) +
 g1
 
 g <- ggarrange(g1,g2+theme(legend.position='bottom'),ncol=2,align='hv',labels=c('AUTO'),font.label = list(size=18))
-ggsave(g,filename=file.path(args$out.dir,paste0(args$job.name,'-MAE_models_competingpairs_ages_agesrc_5yr.png')),w=12.5,h=6)
-ggsave(g,filename=file.path(args$out.dir,paste0(args$job.name,'-MAE_models_competingpairs_ages_agesrc_5yr.pdf')),w=12.5,h=6)
+ggsave(g,filename=file.path(args$out.dir,paste0(args$job.name,'-MAE_models_competingpairs_ages_agesrc_5yr_bluepairs.png')),w=12.5,h=6)
+ggsave(g,filename=file.path(args$out.dir,paste0(args$job.name,'-MAE_models_competingpairs_ages_agesrc_5yr_bluepairs.pdf')),w=12.5,h=6)

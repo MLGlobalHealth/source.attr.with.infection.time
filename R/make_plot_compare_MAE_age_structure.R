@@ -6,7 +6,7 @@ args <- list(
   out.dir = '/Users/alexb/Box Sync/Roadmap/source_attribution'
 )
 
-outfile.base <- file.path(args$out.dir,"mm_bgUnif_piGP_221027-simulations_500truepairs_srcage_exclTE16_subsample50pct-334228/mm_bgUnif_piGP_221027-simulations_500truepairs_srcage_exclTE16_subsample50pct")
+outfile.base <- file.path(args$out.dir,"mm_bgUnif_piGP_221027-simulations_500truepairs_srcage_exclTE16_subsample50pct-1070774/mm_bgUnif_piGP_221027-simulations_500truepairs_srcage_exclTE16_subsample50pct")
 tmp1 <- readRDS(file = paste0(outfile.base,'.rds'))
 mae1 <- readRDS(file=paste0(outfile.base,'-MAE_GQ_all_pairs','.RDS'))
 
@@ -26,7 +26,7 @@ g1 <- ggplot(tmp1) +
        colour = 'Transmission pair') +
   scale_x_continuous(breaks=seq(15,80,10),labels=seq(15,80,10)) +
   scale_y_continuous(breaks=seq(15,80,10),labels=seq(15,80,10)) +
-  scale_colour_manual(values=c(pal[2],pal[1])) +
+  scale_colour_manual(values=c(pal[1],pal[2])) +
   theme_bw(base_size=16) +
   theme(strip.background=element_blank(),
         legend.position='bottom',
@@ -45,7 +45,7 @@ g2 <- ggplot(tmp2) +
        colour = 'Transmission pair') +
   scale_x_continuous(breaks=seq(15,80,10),labels=seq(15,80,10)) +
   scale_y_continuous(breaks=seq(15,80,10),labels=seq(15,80,10)) +
-  scale_colour_manual(values=c(pal[2],pal[1])) +
+  scale_colour_manual(values=c(pal[1],pal[2])) +
   theme_bw(base_size=16) +
   theme(strip.background=element_blank(),
         legend.position='bottom',
@@ -74,4 +74,4 @@ g3 <- ggplot(mae,aes(x=cat),fill=pal3) +
 g <- grid.arrange(arrangeGrob(ggarrange(g1,labels='A',font.label = list(size=18)), ggarrange(g2,labels='B',font.label = list(size=18)), ncol = 1),
                               ggarrange(g3,labels='C',font.label = list(size=18)),# Second row with 2 plots in 2 different columns
              ncol = 2)
-ggsave(g,file=paste0(outfile.base,'-compare_ages_source_recipients_MAE','.pdf'),w=12,h=10)
+ggsave(g,file=paste0(outfile.base,'-compare_ages_source_recipients_MAE_bluered','.pdf'),w=12,h=10)
